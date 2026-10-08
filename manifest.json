@@ -1,1 +1,16 @@
-
+{
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "sidePanel"
+  ],
+  "background": {
+    "service-worker": "background.js"
+  },
+  "side_panel": {
+    "default_path": "LocalUI.html"
+  },
+  "action": {
+    "default_title": "Open ReaderA"
+  }
+}
