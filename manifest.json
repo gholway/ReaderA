@@ -1,16 +1,26 @@
 {
+  "manifest_version": 3,
+  "name": "ReaderA",
+  "version": "1.0",
+  "description": "AI-powered assistant that presents simplified information from charts and graphs.",
   "permissions": [
     "activeTab",
     "scripting",
     "sidePanel"
   ],
   "background": {
-    "service-worker": "background.js"
+    "service_worker": "background.js"
   },
   "side_panel": {
     "default_path": "LocalUI.html"
   },
   "action": {
     "default_title": "Open ReaderA"
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
 }
