@@ -10,11 +10,12 @@
   <div class="container">
     <header>
       <h2>ReaderA</h2>
-      <p class="subtitle">AI Chart Simplifier</p>
+      <p class="subtitle">Local AI Chart Simplifier</p>
     </header>
     
     <main>
-      <button id="analyze-btn" class="primary-btn">Simplify Chart on Page</button>
+      <div id="status-box" class="status-box">Initializing local AI model... Please wait.</div>
+      <button id="analyze-btn" class="primary-btn" disabled>Simplify Chart on Page</button>
       
       <div id="result-container" class="hidden">
         <h3>Summary</h3>
@@ -22,7 +23,9 @@
       </div>
     </main>
   </div>
-  <script src="Logic.js"></script>
-  <script src="panel.js"></script>
+  
+  <!-- Load WebLLM from CDN -->
+  <script type="module" src="Logic.js"></script>
+  <script type="module" src="panel.js"></script>
 </body>
 </html>
