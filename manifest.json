@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "ReaderA",
   "version": "1.0",
-  "description": "AI-powered assistant that presents simplified information from charts and graphs.",
+  "description": "AI-powered assistant that presents simplified information from charts and graphs using a local model.",
   "permissions": [
     "activeTab",
     "scripting",
