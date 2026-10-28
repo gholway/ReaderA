@@ -1,17 +1,40 @@
-// Logic.js - Core helper functions for AI requests
+// Logic.js - Core helper functions using local WebLLM
+import * as webllm from "https://esm.run/@mlc-ai/web-llm";
 
-async function processChartWithAI(imageBase64, config) {
-  if (!config.api_key || config.api_key === "YOUR_OPENAI_API_KEY_HERE") {
-    throw new Error("API key is not configured. Please update config.json.");
+let engine = null;
+
+// Choose a lightweight multimodal model that can run locally via WebGPU
+const SELECTED_MODEL = "Llama-3.2-11B-Vision-Instruct-q4f16_1-MLC";
+
+export async function initializeLocalModel(progressCallback) {
+  if (engine) return engine;
+
+  try {
+    engine = await webllm.CreateMLCEngine(
+      SELECTED_MODEL,
+      { 
+        initProgressCallback: (progress) => {
+          if (progressCallback) progressCallback(progress.text);
+        } 
+      }
+    );
+    return engine;
+  } catch (error) {
+    console.error("Failed to load local AI model:", error);
+    throw error;
+  }
+}
+
+export async function processChartWithAI(imageBase64) {
+  if (!engine) {
+    throw new Error("Local AI model is not initialized yet.");
   }
 
-  const payload = {
-    model: config.model || "gpt-4o",
-    temperature: config.temperature || 0.3,
-    messages: [
+  try {
+    const messages = [
       {
         role: "system",
-        content: "You are an expert data analyst. Your task is to look at the provided chart or graph and write a clear, concise, and easy-to-understand plain-text summary of its key takeaways and trends."
+        content: "You are an expert data analyst. Look at the provided chart or graph and write a clear, concise, and easy-to-understand plain-text summary of its key takeaways and trends."
       },
       {
         role: "user",
@@ -22,35 +45,21 @@ async function processChartWithAI(imageBase64, config) {
           },
           {
             type: "image_url",
-            image_url: {
-              url: imageBase64
-            }
+            image_url: url = imageBase64
           }
         ]
       }
-    ],
-    max_tokens: 300
-  };
+    ];
 
-  try {
-    const response = await fetch(config.api_endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${config.api_key}`
-      },
-      body: JSON.stringify(payload)
+    const reply = await engine.chat.completions.create({
+      messages,
+      temperature: 0.3,
+      max_tokens: 300,
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error?.message || "Failed to communicate with AI API.");
-    }
-
-    const data = await response.json();
-    return data.choices[0].message.content;
+    return reply.choices[0].message.content;
   } catch (error) {
-    console.error("AI Processing Error:", error);
+    console.error("Local AI Processing Error:", error);
     throw error;
   }
 }
