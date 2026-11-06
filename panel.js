@@ -1,12 +1,11 @@
 // panel.js
 import { initializeLocalModel, processChartWithAI } from './Logic.js';
 
-const analyzeBtn = document.getElementById('analyze-btn');
+const selectBtn = document.getElementById('select-btn');
 const summaryText = document.getElementById('summary-text');
 const resultContainer = document.getElementById('result-container');
 const statusBox = document.getElementById('status-box');
 
-// Initialize local model on panel load
 window.addEventListener('DOMContentLoaded', async () => {
   try {
     statusBox.textContent = "Loading local AI model (this may take a minute on first run)...";
@@ -15,17 +14,14 @@ window.addEventListener('DOMContentLoaded', async () => {
     });
     statusBox.textContent = "Local AI model ready!";
     statusBox.style.color = "#059669";
-    analyzeBtn.disabled = false;
+    selectBtn.disabled = false;
   } catch (err) {
     statusBox.textContent = `Failed to load model: ${err.message}`;
     statusBox.style.color = "#dc2626";
   }
 });
 
-analyzeBtn.addEventListener('click', async () => {
-  resultContainer.classList.remove('hidden');
-  summaryText.textContent = "Scanning page for charts and graphs...";
-
+selectBtn.addEventListener('click', async () => {
   try {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     
@@ -34,18 +30,21 @@ analyzeBtn.addEventListener('click', async () => {
       return;
     }
 
-    chrome.tabs.sendMessage(tab.id, { action: "analyze_chart" }, async (response) => {
+    resultContainer.classList.remove('hidden');
+    summaryText.textContent = "Click a chart, graph, or image on the webpage...";
+
+    chrome.tabs.sendMessage(tab.id, { action: "start_selection" }, async (response) => {
       if (chrome.runtime.lastError) {
         summaryText.textContent = "Error: Please refresh the webpage and try again.";
         return;
       }
       
       if (!response || !response.success) {
-        summaryText.textContent = response?.error || "No charts detected on this page.";
+        summaryText.textContent = response?.error || "Selection cancelled or failed.";
         return;
       }
 
-      summaryText.textContent = "Chart detected! Analyzing with local AI model...";
+      summaryText.textContent = "Graphic selected! Analyzing with local AI model...";
 
       try {
         const aiSummary = await processChartWithAI(response.image);
@@ -56,6 +55,6 @@ analyzeBtn.addEventListener('click', async () => {
     });
 
   } catch (err) {
-    summaryText.textContent = `Initialization Error: ${err.message}`;
+    summaryText.textContent = `Error: ${err.message}`;
   }
 });
