@@ -3,7 +3,6 @@ import * as webllm from "https://esm.run/@mlc-ai/web-llm";
 
 let engine = null;
 
-// Choose a lightweight multimodal model that can run locally via WebGPU
 const SELECTED_MODEL = "Llama-3.2-11B-Vision-Instruct-q4f16_1-MLC";
 
 export async function initializeLocalModel(progressCallback) {
@@ -45,7 +44,7 @@ export async function processChartWithAI(imageBase64) {
           },
           {
             type: "image_url",
-            image_url: url = imageBase64
+            image_url: { url: imageBase64 }
           }
         ]
       }
