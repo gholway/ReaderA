@@ -5,6 +5,7 @@ const selectBtn = document.getElementById('select-btn');
 const summaryText = document.getElementById('summary-text');
 const resultContainer = document.getElementById('result-container');
 const statusBox = document.getElementById('status-box');
+const prioritySelect = document.getElementById('priority-select');
 
 window.addEventListener('DOMContentLoaded', async () => {
   try {
@@ -30,6 +31,8 @@ selectBtn.addEventListener('click', async () => {
       return;
     }
 
+    const selectedPriority = prioritySelect ? prioritySelect.value : "executive";
+
     resultContainer.classList.remove('hidden');
     summaryText.textContent = "Click a chart, graph, or image on the webpage...";
 
@@ -47,7 +50,7 @@ selectBtn.addEventListener('click', async () => {
       summaryText.textContent = "Graphic selected! Analyzing with local AI model...";
 
       try {
-        const aiSummary = await processChartWithAI(response.image);
+        const aiSummary = await processChartWithAI(response.image, selectedPriority);
         summaryText.textContent = aiSummary;
       } catch (aiError) {
         summaryText.textContent = `AI Error: ${aiError.message}`;
