@@ -15,6 +15,17 @@
     
     <main>
       <div id="status-box" class="status-box">Initializing local AI model... Please wait.</div>
+      
+      <div class="priority-container">
+        <label for="priority-select">Analysis Focus / Priority:</label>
+        <select id="priority-select">
+          <option value="executive">Executive Summary (Concise overview)</option>
+          <option value="trends">Key Trends & Insights (Focus on direction)</option>
+          <option value="data">Data Extraction (Focus on exact numbers/values)</option>
+          <option value="anomalies">Anomalies & Outliers (Focus on unusual points)</option>
+        </select>
+      </div>
+
       <button id="select-btn" class="primary-btn" disabled>Select Chart on Page</button>
       
       <div id="result-container" class="hidden">
