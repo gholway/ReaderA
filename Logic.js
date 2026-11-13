@@ -24,23 +24,33 @@ export async function initializeLocalModel(progressCallback) {
   }
 }
 
-export async function processChartWithAI(imageBase64) {
+export async function processChartWithAI(imageBase64, priority = "executive") {
   if (!engine) {
     throw new Error("Local AI model is not initialized yet.");
   }
+
+  // Dynamic system instructions based on user-selected priority
+  const systemPrompts = {
+    executive: "You are an expert data analyst. Look at the provided chart or graph and write a clear, concise executive summary highlighting the main takeaways.",
+    trends: "You are an expert data analyst. Look at the provided chart or graph and focus intensely on key trends, growth patterns, and trajectories over time.",
+    data: "You are an expert data analyst. Look at the provided chart or graph and extract specific data points, numerical values, axis metrics, and quantitative details.",
+    anomalies: "You are an expert data analyst. Look at the provided chart or graph and focus specifically on anomalies, outliers, unexpected spikes, or drops."
+  };
+
+  const systemContent = systemPrompts[priority] || systemPrompts.executive;
 
   try {
     const messages = [
       {
         role: "system",
-        content: "You are an expert data analyst. Look at the provided chart or graph and write a clear, concise, and easy-to-understand plain-text summary of its key takeaways and trends."
+        content: systemContent
       },
       {
         role: "user",
         content: [
           {
             type: "text",
-            text: "Please simplify and summarize this chart:"
+            text: "Please analyze this chart according to the specified focus:"
           },
           {
             type: "image_url",
