@@ -29,6 +29,34 @@ header h2 {
   color: #6b7280;
 }
 
+.priority-container {
+  margin-bottom: 12px;
+}
+
+.priority-container label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 4px;
+  color: #374151;
+}
+
+.priority-container select {
+  width: 100%;
+  padding: 8px;
+  font-size: 13px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background-color: white;
+  color: #1f2937;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.priority-container select:focus {
+  border-color: #2563eb;
+}
+
 .primary-btn {
   width: 100%;
   background-color: #2563eb;
@@ -69,6 +97,7 @@ header h2 {
   color: #4b5563;
   line-height: 1.4;
 }
+
 .status-box {
   font-size: 12px;
   color: #d97706;
