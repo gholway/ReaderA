@@ -11,10 +11,10 @@ export async function initializeLocalModel(progressCallback) {
   try {
     engine = await webllm.CreateMLCEngine(
       SELECTED_MODEL,
-      { 
+      {
         initProgressCallback: (progress) => {
           if (progressCallback) progressCallback(progress.text);
-        } 
+        }
       }
     );
     return engine;
@@ -77,6 +77,64 @@ export async function processChartWithAI(imageBase64, priority = "executive") {
     return reply.choices[0].message.content;
   } catch (error) {
     console.error("Local AI Processing Error:", error);
+    throw error;
+  }
+}
+
+export async function compareAnalyses(itemA, itemB) {
+  if (!engine) {
+    throw new Error("Local AI model is not initialized yet.");
+  }
+
+  if (!itemA || !itemB) {
+    throw new Error("Two saved memory items are required for comparison.");
+  }
+
+  const systemContent =
+    "You are an expert comparative data analyst. Compare two charts or visual inputs stored in temporary session memory. Clearly identify: (1) key similarities and shared patterns, (2) major differences in values, trends, or scales, (3) notable anomalies or shifts from Input A to Input B, and (4) any caveats if axes, units, or chart types differ.";
+
+  try {
+    const messages = [
+      {
+        role: "system",
+        content: systemContent
+      },
+      {
+        role: "user",
+        content: [
+          {
+            type: "text",
+            text: `Input A (${itemA.label}, focus: ${itemA.priority}) — Prior summary: ${itemA.summary}`
+          },
+          {
+            type: "image_url",
+            image_url: { url: itemA.image }
+          },
+          {
+            type: "text",
+            text: `Input B (${itemB.label}, focus: ${itemB.priority}) — Prior summary: ${itemB.summary}`
+          },
+          {
+            type: "image_url",
+            image_url: { url: itemB.image }
+          },
+          {
+            type: "text",
+            text: "Provide a concise, structured comparison between Input A and Input B."
+          }
+        ]
+      }
+    ];
+
+    const reply = await engine.chat.completions.create({
+      messages,
+      temperature: 0.25,
+      max_tokens: 550,
+    });
+
+    return reply.choices[0].message.content;
+  } catch (error) {
+    console.error("Local AI Comparison Error:", error);
     throw error;
   }
 }
