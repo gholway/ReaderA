@@ -12,11 +12,11 @@
       <h2>ReaderA</h2>
       <p class="subtitle">Local AI Chart Simplifier</p>
     </header>
-    
+
     <main>
       <div id="status-box" class="status-box">Initializing local AI model... Please wait.</div>
-      
-<div class="priority-container">
+
+      <div class="priority-container">
         <label for="priority-select">Analysis Focus / Priority:</label>
         <select id="priority-select">
           <option value="executive">Executive Summary (Concise overview)</option>
@@ -28,14 +28,31 @@
       </div>
 
       <button id="select-btn" class="primary-btn" disabled>Select Chart on Page</button>
-      
+
       <div id="result-container" class="hidden">
         <h3>Summary</h3>
         <p id="summary-text">Waiting for chart analysis...</p>
       </div>
+
+      <section id="memory-section" class="memory-section">
+        <div class="memory-header">
+          <h3>Session Memory (<span id="memory-count">0</span>)</h3>
+          <button id="clear-memory-btn" class="secondary-btn" type="button">Clear</button>
+        </div>
+        <p class="memory-hint">Check up to 2 items to compare (or keep adding inputs).</p>
+        <div id="memory-list" class="memory-list">
+          <p class="empty-memory">No charts stored in temporary memory yet.</p>
+        </div>
+        <button id="compare-btn" class="compare-btn" type="button" disabled>Compare 2 Selected Items</button>
+      </section>
+
+      <div id="comparison-container" class="hidden">
+        <h3>Comparison Result</h3>
+        <p id="comparison-text"></p>
+      </div>
     </main>
   </div>
-  
+
   <script type="module" src="Logic.js"></script>
   <script type="module" src="panel.js"></script>
 </body>
